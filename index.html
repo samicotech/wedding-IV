@@ -838,36 +838,21 @@
     });
 
     // ---------- Wedding music ----------
-    // Plays a song file hosted alongside this page: audio/your-song.mp3
-    // (see the <audio> tag above). Swap that file for your own track —
-    // nothing is streamed from an external platform.
-    const bgMusic = document.getElementById('bg-music');
+    // Embeds the official Spotify player for "Oruka" by Sunny Neji, so playback
+    // streams from the licensed source rather than a copied audio file.
+    const musicPanel = document.getElementById('music-panel');
     const musicBtn = document.getElementById('music-toggle');
-    const musicHint = document.getElementById('music-hint');
     let isPlaying = false;
-    let hintTimer = null;
-
-    function showHint(){
-      musicHint.classList.add('show');
-      clearTimeout(hintTimer);
-      hintTimer = setTimeout(()=> musicHint.classList.remove('show'), 4500);
-    }
     function startMusic(){
       if(isPlaying) return;
-      const playPromise = bgMusic.play();
-      if(playPromise && playPromise.catch){
-        playPromise.then(()=>{
-          isPlaying = true;
-          musicBtn.classList.add('playing');
-          musicBtn.setAttribute('aria-pressed', 'true');
-        }).catch(()=>{
-          showHint(); // no audio file found yet at audio/your-song.mp3
-        });
-      }
+      isPlaying = true;
+      musicPanel.classList.add('open');
+      musicBtn.classList.add('playing');
+      musicBtn.setAttribute('aria-pressed', 'true');
     }
     function stopMusic(){
       isPlaying = false;
-      bgMusic.pause();
+      musicPanel.classList.remove('open');
       musicBtn.classList.remove('playing');
       musicBtn.setAttribute('aria-pressed', 'false');
     }
