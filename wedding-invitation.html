@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Adewale &amp; Adunni — 14 June 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Parisienne&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --burgundy: #380a13;
+    --burgundy-2: #55111f;
+    --burgundy-3: #6c1728;
+    --burgundy-hi: #832036;
+    --gold: #bf9a52;
+    --gold-light: #ddc98f;
+    --gold-deep: #8a6a29;
+    --cream: #ece0c6;
+    --paper: #e3d3ae;
+    --ink: #201007;
+    --ink-soft: #45362a;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Cormorant Garamond', serif;
+    overflow:hidden; /* released once curtain opens */
+  }
+  body.unlocked{overflow:auto;}
+
+  ::selection{background:var(--gold-light); color:var(--burgundy);}
+
+  a{color:inherit;}
+
+  /* ---------- shared type ---------- */
+  .script{
+    font-family:'Parisienne', cursive;
+    font-weight:400;
+    line-height:1;
+  }
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.22em;
+    color:var(--gold-deep);
+    font-style:italic;
+  }
+  .divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:28px auto;
+    width:100%;
+    max-width:220px;
+  }
+  .divider .line{flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent);}
+  .divider .mark{width:6px; height:6px; border:1px solid var(--gold); transform:rotate(45deg);}
+
+  section{
+    padding:120px 24px;
+    max-width:640px;
+    margin:0 auto;
+    text-align:center;
+  }
+
+  h2{
+    font-weight:500;
+    font-size:2.1rem;
+    margin:0 0 6px;
+    color:var(--burgundy);
+  }
+
+  p{
+    font-size:1.15rem;
+    line-height:1.75;
+    color:var(--ink-soft);
+    margin:0 auto;
+    max-width:480px;
+  }
+
+  /* ============ CURTAIN INTRO ============ */
+  #curtain{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+  }
+  .panel{
+    flex:1;
+    position:relative;
+    background:
+      repeating-linear-gradient(90deg,
+        #200509   0px,  #200509  2px,
+        var(--burgundy) 2px, var(--burgundy) 7px,
+        var(--burgundy-hi) 7px, var(--burgundy-hi) 11px,
+        var(--burgundy-3) 11px, var(--burgundy-3) 15px,
+        var(--burgundy) 15px, var(--burgundy) 19px,
+        #200509  19px, #200509 21px);
+    box-shadow:
+      inset -40px 0 60px rgba(0,0,0,0.45),
+      inset 0 0 90px rgba(0,0,0,0.3);
+  }
+  .panel.left{transform-origin:right center;}
+  .panel.right{transform-origin:left center;}
+  .panel::before{ /* top valance */
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:34px;
+    background:linear-gradient(180deg, var(--gold), var(--gold-deep));
+    box-shadow:0 3px 10px rgba(0,0,0,0.5);
+    z-index:2;
+  }
+  .panel.left{border-right:1px solid rgba(0,0,0,0.4);}
+  .panel.right{border-left:1px solid rgba(0,0,0,0.4);}
+
+  /* dark seam where the two panels meet, stays visible through the fold, then fades as they exit */
+  .center-seam{
+    position:absolute;
+    top:34px; bottom:0; left:50%;
+    width:46px;
+    margin-left:-23px;
+    z-index:1;
+    background:linear-gradient(90deg,
+      transparent, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.55) 55%, transparent);
+    opacity:1;
+    transition:opacity .6s ease .55s;
+    pointer-events:none;
+  }
+  #curtain.open .center-seam{opacity:0;}
+
+  @keyframes gatherLeft{
+    0%  { transform: translateX(0) scaleX(1); }
+    38% { transform: translateX(0) scaleX(0.62); }      /* soft fold gathers inward at the middle */
+    100%{ transform: translateX(-100%) scaleX(0.4); }   /* then the gathered fabric glides off-stage */
+  }
+  @keyframes gatherRight{
+    0%  { transform: translateX(0) scaleX(1); }
+    38% { transform: translateX(0) scaleX(0.62); }
+    100%{ transform: translateX(100%) scaleX(0.4); }
+  }
+  #curtain.open .panel.left{
+    animation: gatherLeft 1.8s cubic-bezier(.45,0,.2,1) forwards;
+  }
+  #curtain.open .panel.right{
+    animation: gatherRight 1.8s cubic-bezier(.45,0,.2,1) forwards;
+  }
+  #curtain.hidden{display:none;}
+
+  #curtain-invite{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:32px;
+    z-index:2;
+    pointer-events:none;
+  }
+  #curtain-invite .names{
+    font-size:clamp(2.6rem, 10vw, 4rem);
+    color:var(--cream);
+    text-shadow:0 2px 18px rgba(0,0,0,0.4);
+  }
+  #curtain-invite .amp{
+    color:var(--gold-light);
+    font-size:0.7em;
+    display:block;
+    margin:2px 0;
+  }
+  #tap-hint{
+    margin-top:36px;
+    color:var(--gold-light);
+    font-size:0.85rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    animation:pulse 1.8s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:0.45;}
+    50%{opacity:1;}
+  }
+
+  /* ============ MUSIC TOGGLE ============ */
+  .music-toggle{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:60;
+    width:52px; height:52px;
+    border-radius:50%;
+    background:var(--burgundy);
+    border:1px solid var(--gold);
+    color:var(--gold-light);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,0.4);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .5s ease, transform .2s ease;
+  }
+  body.unlocked .music-toggle{opacity:1; pointer-events:auto;}
+  .music-toggle:hover{transform:scale(1.06);}
+  .music-toggle svg{width:22px; height:22px; position:relative; z-index:1;}
+  .icon-pause{display:none;}
+  .music-toggle.playing .icon-note{display:none;}
+  .music-toggle.playing .icon-pause{display:block;}
+  .music-toggle .ring{
+    position:absolute;
+    inset:-6px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    opacity:0;
+  }
+  .music-toggle.playing .ring{
+    animation:ringPulse 1.8s ease-out infinite;
+  }
+  @keyframes ringPulse{
+    0%{ transform:scale(0.85); opacity:0.6; }
+    100%{ transform:scale(1.25); opacity:0; }
+  }
+  .music-hint{
+    position:fixed;
+    right:20px;
+    bottom:82px;
+    z-index:59;
+    max-width:min(230px, calc(100vw - 40px));
+    background:var(--burgundy);
+    color:var(--gold-light);
+    border:1px solid var(--gold);
+    padding:10px 14px;
+    font-size:0.82rem;
+    line-height:1.5;
+    border-radius:10px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    opacity:0;
+    transform:translateY(8px);
+    pointer-events:none;
+    transition:opacity .35s ease, transform .35s ease;
+  }
+  .music-hint code{
+    color:var(--gold);
+    font-family:inherit;
+    font-style:italic;
+  }
+  .music-hint.show{opacity:1; transform:translateY(0);}
+
+  /* ============ HERO (behind curtain) ============ */
+  #hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:60px 24px;
+  }
+  #hero .kicker{
+    font-size:0.82rem;
+    letter-spacing:0.25em;
+    color:var(--gold-deep);
+    font-style:italic;
+    margin-bottom:18px;
+  }
+  #hero .names{
+    font-size:clamp(3rem, 11vw, 5rem);
+    color:var(--burgundy);
+  }
+  #hero .amp{display:block; font-size:0.65em; color:var(--gold-deep); margin:4px 0;}
+  #hero p{margin-top:26px;}
+  .couple-illustration{
+    margin:40px auto 0;
+    width:170px;
+  }
+  .couple-illustration svg{width:100%; height:auto; display:block;}
+
+  /* ============ REVEAL / SCRATCH ============ */
+  #reveal .eyebrow{display:block; margin-bottom:2px;}
+  #reveal h2{margin-bottom:2px;}
+  .scratch-wrap{
+    position:relative;
+    width:100%;
+    max-width:360px;
+    margin:42px auto 8px;
+    aspect-ratio: 16 / 8;
+    border:1px solid var(--gold);
+    background:var(--paper);
+  }
+  .scratch-underlay{
+    position:absolute; inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:4px;
+  }
+  .scratch-underlay .date-big{
+    font-family:'Parisienne', cursive;
+    font-size:2.6rem;
+    color:var(--burgundy);
+  }
+  .scratch-underlay .date-year{
+    font-size:1rem;
+    letter-spacing:0.3em;
+    color:var(--gold-deep);
+  }
+  #scratchCanvas{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    cursor:grab;
+    touch-action:none;
+  }
+  .scratch-note{
+    margin-top:14px;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    font-style:italic;
+    letter-spacing:0.02em;
+  }
+  #married-line{
+    font-family:'Parisienne', cursive;
+    font-size:2rem;
+    color:var(--burgundy);
+    margin-top:22px;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  #married-line.show{opacity:1; transform:translateY(0);}
+
+  .petal{
+    position:fixed;
+    top:-20px;
+    width:9px; height:9px;
+    background:var(--gold);
+    border-radius:2px 0;
+    z-index:5;
+    pointer-events:none;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(400deg); opacity:0; }
+  }
+
+  /* ============ VENUE ============ */
+  #venue{background:var(--paper);}
+  #venue .venue-name{
+    font-family:'Parisienne', cursive;
+    font-size:2.2rem;
+    color:var(--burgundy);
+    margin:8px 0 2px;
+  }
+  #venue .venue-address{
+    color:var(--ink-soft);
+    font-size:0.95rem;
+    letter-spacing:0.04em;
+  }
+  #venue .venue-date{
+    margin-top:26px;
+    font-size:1.3rem;
+    color:var(--ink);
+  }
+  #venue .venue-follow{
+    font-style:italic;
+    color:var(--gold-deep);
+    margin-top:4px;
+    font-size:1.05rem;
+  }
+
+  /* ============ MENU ============ */
+  #menu-card{
+    border:1px solid var(--gold);
+    padding:56px 32px;
+    position:relative;
+  }
+  #menu-card::before, #menu-card::after{
+    content:"";
+    position:absolute;
+    width:14px; height:14px;
+    border:1px solid var(--gold);
+    transform:rotate(45deg);
+  }
+  #menu-card::before{top:-8px; left:50%; margin-left:-7px; background:var(--cream);}
+  #menu-card::after{bottom:-8px; left:50%; margin-left:-7px; background:var(--cream);}
+  .course{margin-bottom:30px;}
+  .course:last-child{margin-bottom:0;}
+  .course-name{
+    letter-spacing:0.2em;
+    font-size:0.85rem;
+    color:var(--burgundy);
+    font-style:italic;
+    margin-bottom:6px;
+  }
+  .course-desc{
+    font-size:1.05rem;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+
+  /* ============ DRESS CODE ============ */
+  #dress{background:var(--paper);}
+  .silhouettes{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin:36px 0 8px;
+  }
+  .silhouettes svg{width:56px; height:94px;}
+  .attire-title{
+    font-family:'Parisienne', cursive;
+    font-size:2rem;
+    color:var(--burgundy);
+    margin-top:20px;
+  }
+  .attire-note{
+    font-style:italic;
+    color:var(--gold-deep);
+    font-size:0.95rem;
+    margin-top:6px;
+  }
+
+  /* ============ RSVP ============ */
+  .rsvp-form{
+    margin:38px auto 0;
+    max-width:400px;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+  .rsvp-form label{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    font-size:0.92rem;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+  }
+  .rsvp-form .optional{font-style:italic; opacity:0.75; font-size:0.85em;}
+  .rsvp-form input,
+  .rsvp-form select,
+  .rsvp-form textarea{
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.05rem;
+    color:var(--ink);
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--gold);
+    padding:6px 2px;
+    outline:none;
+    resize:vertical;
+  }
+  .rsvp-form input:focus,
+  .rsvp-form select:focus,
+  .rsvp-form textarea:focus{
+    border-bottom:1px solid var(--burgundy);
+  }
+  .rsvp-form button{
+    margin-top:8px;
+    align-self:center;
+    background:transparent;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  #rsvp-thanks{
+    display:none;
+    margin-top:38px;
+  }
+  #rsvp-thanks.show{display:block;}
+
+  /* ============ GIFTS ============ */
+  #gifts .crown{margin:0 auto 16px; width:46px; height:46px; display:block;}
+  #gifts h2{margin-bottom:16px;}
+  .registry-btn{
+    display:inline-block;
+    margin-top:28px;
+    padding:14px 36px;
+    border:1px solid var(--burgundy);
+    color:var(--burgundy);
+    text-decoration:none;
+    font-size:0.9rem;
+    letter-spacing:0.18em;
+    transition:background .3s ease, color .3s ease;
+  }
+  .registry-btn:hover{background:var(--burgundy); color:var(--cream);}
+
+  footer{
+    text-align:center;
+    padding:60px 24px 80px;
+    font-size:0.85rem;
+    color:var(--gold-deep);
+    letter-spacing:0.1em;
+  }
+
+  @media (max-width: 480px){
+    section{padding:90px 20px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.2s !important;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ CURTAIN INTRO ============ -->
+  <div id="curtain" role="button" tabindex="0" aria-label="Tap to open the invitation">
+    <div class="panel left"></div>
+    <div class="panel right"></div>
+    <div class="center-seam"></div>
+    <div id="curtain-invite">
+      <p class="eyebrow" style="color:var(--gold-light)">Together with their families</p>
+      <div class="names script">
+        Adewale <span class="amp">&amp;</span> Adunni
+      </div>
+      <p id="tap-hint">Tap to begin</p>
+    </div>
+  </div>
+
+  <!-- ============ MUSIC ============ -->
+  <!-- Drop your own audio file in an "audio" folder next to this HTML file,
+       named "your-song.mp3" (or update the src below to match your filename). -->
+  <audio id="bg-music" loop preload="none">
+    <source src="audio/your-song.mp3" type="audio/mpeg">
+  </audio>
+  <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false" aria-label="Toggle wedding music">
+    <svg class="icon-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+      <circle cx="7.5" cy="17.5" r="2.4"/>
+      <circle cx="17" cy="15.5" r="2.4"/>
+      <path d="M9.9 17.5V6.2L19.4 4v11.5"/>
+      <path d="M9.9 8.3L19.4 6.1"/>
+    </svg>
+    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="6" y="5" width="4" height="14" rx="1"/>
+      <rect x="14" y="5" width="4" height="14" rx="1"/>
+    </svg>
+    <span class="ring" aria-hidden="true"></span>
+  </button>
+  <div id="music-hint" class="music-hint">Add your song file at <code>audio/your-song.mp3</code></div>
+
+  <!-- ============ HERO ============ -->
+  <section id="hero">
+    <p class="kicker">Together with their families</p>
+    <div class="names script">Adewale <span class="amp">&amp;</span> Adunni</div>
+    <p>We would like to invite you to celebrate with us on the most special
+      day of our lives. It would be an honor to have you present for this
+      important moment.</p>
+
+    <div class="couple-illustration" aria-label="Illustration of the couple in traditional Yoruba attire">
+      <svg viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
+        <!-- groom: agbada + fila -->
+        <path d="M70 54 L48 56 C30 66 18 92 20 112 L52 96 L56 118 L40 146 L34 232 L108 232 L100 146 L84 118 L88 96 L120 112 C122 92 110 66 92 56 Z"
+              fill="var(--burgundy-2)" stroke="var(--gold)" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="70" cy="40" r="14" fill="var(--paper)" stroke="var(--gold)" stroke-width="1.1"/>
+        <path d="M57 33 C57 22 83 22 83 33 C74 27 66 27 57 33 Z" fill="var(--gold-deep)" stroke="var(--gold)" stroke-width="1"/>
+        <path d="M56 118 L84 118" stroke="var(--gold)" stroke-width="1"/>
+
+        <!-- bride: iro, buba & gele -->
+        <path d="M150 30 C132 26 124 40 128 50 C138 42 162 42 172 50 C176 40 168 26 150 30 Z"
+              fill="var(--gold-deep)" stroke="var(--gold)" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="150" cy="46" r="13" fill="var(--paper)" stroke="var(--gold)" stroke-width="1.1"/>
+        <path d="M132 58 L168 58 C176 74 164 104 168 112 C182 140 184 190 190 232 L110 232 C116 190 118 140 132 112 C136 104 124 74 132 58 Z"
+              fill="var(--burgundy-2)" stroke="var(--gold)" stroke-width="1.1" stroke-linejoin="round"/>
+        <path d="M136 92 L164 92" stroke="var(--gold)" stroke-width="1"/>
+
+        <!-- clasped hands -->
+        <path d="M104 190 C112 186 128 186 136 190" stroke="var(--gold)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ REVEAL / SCRATCH CARD ============ -->
+  <section id="reveal">
+    <p class="eyebrow">Reveal</p>
+    <h2>Scratch to discover the date</h2>
+
+    <div class="scratch-wrap">
+      <div class="scratch-underlay">
+        <div class="date-big">14th of June</div>
+        <div class="date-year">2 0 2 7</div>
+      </div>
+      <canvas id="scratchCanvas"></canvas>
+    </div>
+    <p class="scratch-note">Use your finger or cursor to uncover it</p>
+    <div id="married-line" class="script">We're getting married!</div>
+  </section>
+
+  <!-- ============ VENUE ============ -->
+  <section id="venue">
+    <p class="eyebrow">Ceremony &amp; Reception</p>
+    <div class="venue-name script">The Ivory Garden</div>
+    <div class="venue-address">12 Kofo Abayomi Street · Victoria Island, Lagos</div>
+    <div class="divider"><span class="line"></span><span class="mark"></span><span class="line"></span></div>
+    <div class="venue-date">Saturday, 14 June 2027 · 4:00 PM</div>
+    <div class="venue-follow">Reception to follow</div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section id="menu">
+    <p class="eyebrow">Dinner</p>
+    <h2 style="margin-bottom:34px;">Menu</h2>
+    <div id="menu-card">
+      <div class="course">
+        <div class="course-name">Small Chops</div>
+        <div class="course-desc">Chicken suya skewers · puff puff ·<br>spring rolls &amp; chilled zobo</div>
+      </div>
+      <div class="course">
+        <div class="course-name">Starter</div>
+        <div class="course-desc">Peppered snail with a light salad</div>
+      </div>
+      <div class="course">
+        <div class="course-name">Main</div>
+        <div class="course-desc">Jollof rice &amp; pounded yam with egusi soup, grilled chicken and goat meat</div>
+      </div>
+      <div class="course">
+        <div class="course-name">Dessert</div>
+        <div class="course-desc">Chin chin &amp; coconut candy</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DRESS CODE ============ -->
+  <section id="dress">
+    <p class="eyebrow">What to Wear</p>
+    <h2>Aso-Ebi</h2>
+    <div class="silhouettes" aria-hidden="true">
+      <svg viewBox="0 0 60 100" fill="none" stroke="var(--burgundy)" stroke-width="1.1">
+        <path d="M20 12 C20 4 40 4 40 12 C33 8 27 8 20 12 Z" fill="var(--gold-deep)" stroke="var(--gold)"/>
+        <circle cx="30" cy="16" r="6.5" fill="var(--paper)" stroke="var(--gold)"/>
+        <path d="M30 23 L15 25 C6 30 2 42 4 52 L22 44 L24 54 L15 68 L12 98 L48 98 L45 68 L36 54 L38 44 L56 52 C58 42 54 30 45 25 Z"
+              fill="var(--burgundy-2)" stroke="var(--gold)"/>
+        <path d="M24 54 L36 54" stroke="var(--gold)"/>
+      </svg>
+      <svg viewBox="0 0 60 100" fill="none" stroke="var(--burgundy)" stroke-width="1.1">
+        <path d="M30 22 C18 20 14 30 16 36 C22 30 38 30 44 36 C46 30 42 20 30 22 Z" fill="var(--gold-deep)" stroke="var(--gold)"/>
+        <circle cx="30" cy="34" r="6" fill="var(--paper)" stroke="var(--gold)"/>
+        <path d="M18 42 L42 42 C48 54 40 74 44 98 L16 98 C20 74 12 54 18 42 Z"
+              fill="var(--burgundy-2)" stroke="var(--gold)"/>
+        <path d="M21 58 L39 58" stroke="var(--gold)"/>
+      </svg>
+    </div>
+    <div class="attire-title script">Traditional Yoruba Attire</div>
+    <div class="attire-note">Agbada, iro &amp; buba, gele — in our burgundy and gold aso-ebi</div>
+  </section>
+
+
+  <!-- ============ RSVP ============ -->
+  <section id="rsvp">
+    <p class="eyebrow">Kindly Respond</p>
+    <h2>RSVP</h2>
+    <p>Please let us know if you'll be celebrating with us, on or before
+      1 May 2027.</p>
+
+    <form id="rsvp-form" class="rsvp-form">
+      <label>
+        Full name
+        <input type="text" name="name" required autocomplete="name">
+      </label>
+      <label>
+        Email or phone number
+        <input type="text" name="contact" required autocomplete="email">
+      </label>
+      <label>
+        Number of guests
+        <input type="number" name="guests" min="1" max="6" value="1" required>
+      </label>
+      <label>
+        Will you be attending?
+        <select name="attending" required>
+          <option value="" disabled selected>Please choose</option>
+          <option value="yes">Joyfully accepts</option>
+          <option value="no">Regretfully declines</option>
+        </select>
+      </label>
+      <label>
+        Message for the couple <span class="optional">(optional)</span>
+        <textarea name="message" rows="3"></textarea>
+      </label>
+      <button type="submit" class="registry-btn">Send RSVP</button>
+    </form>
+
+    <div id="rsvp-thanks">
+      <div class="attire-title script">Thank you!</div>
+      <p>Your RSVP has been received. We can't wait to celebrate with you.</p>
+    </div>
+  </section>
+
+  <!-- ============ GIFTS ============ -->
+  <section id="gifts">
+    <svg class="crown" viewBox="0 0 48 48" fill="none" stroke="var(--gold)" stroke-width="1.3">
+      <path d="M8 20 L14 30 L24 16 L34 30 L40 20 L38 34 H10 Z"/>
+      <circle cx="8" cy="18" r="2"/><circle cx="24" cy="14" r="2"/><circle cx="40" cy="18" r="2"/>
+    </svg>
+    <p class="eyebrow">Wedding Registry</p>
+    <h2>Gifts</h2>
+    <p>Your presence at our wedding is the greatest gift of all. Should you
+      wish to help us begin this new chapter, we've put together a small
+      registry.</p>
+    <a class="registry-btn" href="#" onclick="return false;">View Registry</a>
+  </section>
+
+  <footer>Adewale &amp; Adunni · 14 June 2027</footer>
+
+  <script>
+    // ---------- Curtain open interaction ----------
+    const curtain = document.getElementById('curtain');
+    function openCurtain(){
+      if(curtain.classList.contains('open')) return;
+      curtain.classList.add('open');
+      document.body.classList.add('unlocked');
+      setTimeout(()=> curtain.classList.add('hidden'), 1900);
+      startMusic();
+    }
+    curtain.addEventListener('click', openCurtain);
+    curtain.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' ') openCurtain();
+    });
+
+    // ---------- Scratch-to-reveal ----------
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d');
+    const wrap = canvas.closest('.scratch-wrap');
+    let scratched = false;
+
+    function sizeCanvas(){
+      const rect = wrap.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      drawFoil();
+    }
+
+    function drawFoil(){
+      const w = canvas.width, h = canvas.height;
+      const grad = ctx.createLinearGradient(0,0,w,h);
+      grad.addColorStop(0, '#d8b876');
+      grad.addColorStop(0.5, '#c6a15b');
+      grad.addColorStop(1, '#b5904a');
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,w,h);
+
+      ctx.fillStyle = 'rgba(90,60,20,0.5)';
+      ctx.font = `${Math.max(13, w*0.045)}px 'Cormorant Garamond', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('scratch to reveal', w/2, h/2);
+    }
+
+    let isDown = false;
+    function getPos(e){
+      const rect = canvas.getBoundingClientRect();
+      const point = e.touches ? e.touches[0] : e;
+      return { x: point.clientX - rect.left, y: point.clientY - rect.top };
+    }
+    function scratchAt(x,y){
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(canvas.width, canvas.height) * 0.07, 0, Math.PI*2);
+      ctx.fill();
+    }
+    function checkProgress(){
+      if(scratched) return;
+      const data = ctx.getImageData(0,0,canvas.width, canvas.height).data;
+      let cleared = 0;
+      const step = 4 * 8; // sample every 8th pixel
+      let total = 0;
+      for(let i=3; i<data.length; i+=step){
+        total++;
+        if(data[i] < 40) cleared++;
+      }
+      if(cleared/total > 0.55){
+        scratched = true;
+        revealDate();
+      }
+    }
+    function revealDate(){
+      canvas.style.transition = 'opacity .6s ease';
+      canvas.style.opacity = '0';
+      setTimeout(()=> canvas.style.display='none', 650);
+      document.getElementById('married-line').classList.add('show');
+      spawnPetals();
+    }
+    function handleMove(e){
+      if(!isDown) return;
+      e.preventDefault();
+      const {x,y} = getPos(e);
+      scratchAt(x,y);
+      checkProgress();
+    }
+    canvas.addEventListener('mousedown', (e)=>{ isDown = true; const {x,y}=getPos(e); scratchAt(x,y); });
+    window.addEventListener('mouseup', ()=> isDown = false);
+    canvas.addEventListener('mousemove', handleMove);
+
+    canvas.addEventListener('touchstart', (e)=>{ isDown = true; const {x,y}=getPos(e); scratchAt(x,y); }, {passive:true});
+    window.addEventListener('touchend', ()=> isDown = false);
+    canvas.addEventListener('touchmove', handleMove, {passive:false});
+
+    window.addEventListener('resize', sizeCanvas);
+    window.addEventListener('load', sizeCanvas);
+    // in case load already fired
+    sizeCanvas();
+
+    // ---------- Petal / confetti burst ----------
+    function spawnPetals(){
+      const colors = ['#c6a15b', '#4d0f1c', '#ecdfb7'];
+      const originRect = document.getElementById('reveal').getBoundingClientRect();
+      for(let i=0; i<26; i++){
+        const p = document.createElement('div');
+        p.className = 'petal';
+        const left = originRect.left + Math.random()*originRect.width;
+        p.style.left = left + 'px';
+        p.style.top = (originRect.top + window.scrollY - 10) + 'px';
+        p.style.background = colors[Math.floor(Math.random()*colors.length)];
+        const duration = 1.6 + Math.random()*1.2;
+        p.style.animationDuration = duration + 's';
+        p.style.animationDelay = (Math.random()*0.3) + 's';
+        document.body.appendChild(p);
+        setTimeout(()=> p.remove(), (duration+0.5)*1000);
+      }
+    }
+
+    // ---------- RSVP form (client-side demo; wire to a backend/Sheet before going live) ----------
+    const rsvpForm = document.getElementById('rsvp-form');
+    const rsvpThanks = document.getElementById('rsvp-thanks');
+    rsvpForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      rsvpForm.style.display = 'none';
+      rsvpThanks.classList.add('show');
+    });
+
+    // ---------- Wedding music ----------
+    // Plays a song file hosted alongside this page: audio/your-song.mp3
+    // (see the <audio> tag above). Swap that file for your own track —
+    // nothing is streamed from an external platform.
+    const bgMusic = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-toggle');
+    const musicHint = document.getElementById('music-hint');
+    let isPlaying = false;
+    let hintTimer = null;
+
+    function showHint(){
+      musicHint.classList.add('show');
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(()=> musicHint.classList.remove('show'), 4500);
+    }
+    function startMusic(){
+      if(isPlaying) return;
+      const playPromise = bgMusic.play();
+      if(playPromise && playPromise.catch){
+        playPromise.then(()=>{
+          isPlaying = true;
+          musicBtn.classList.add('playing');
+          musicBtn.setAttribute('aria-pressed', 'true');
+        }).catch(()=>{
+          showHint(); // no audio file found yet at audio/your-song.mp3
+        });
+      }
+    }
+    function stopMusic(){
+      isPlaying = false;
+      bgMusic.pause();
+      musicBtn.classList.remove('playing');
+      musicBtn.setAttribute('aria-pressed', 'false');
+    }
+    musicBtn.addEventListener('click', ()=>{
+      isPlaying ? stopMusic() : startMusic();
+    });
+  </script>
+</body>
+</html>
