@@ -567,7 +567,7 @@
   <!-- ============ MUSIC ============ -->
   <!-- Drop your own audio file in an "audio" folder next to this HTML file,
        named "your-song.mp3" (or update the src below to match your filename). -->
-  <audio id="bg-music" loop preload="none">
+  <audio id="bg-music" preload="none">
     <source src="audio/your-song.mp3" type="audio/mpeg">
   </audio>
   <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false" aria-label="Toggle wedding music">
@@ -975,11 +975,20 @@
     // Plays a song file hosted alongside this page: audio/your-song.mp3
     // (see the <audio> tag above). Swap that file for your own track —
     // nothing is streamed from an external platform.
+    const START_AT = 22; // seconds into the track to start (and loop back to)
     const bgMusic = document.getElementById('bg-music');
     const musicBtn = document.getElementById('music-toggle');
     const musicHint = document.getElementById('music-hint');
     let isPlaying = false;
     let hintTimer = null;
+
+    bgMusic.addEventListener('loadedmetadata', ()=>{
+      if(bgMusic.duration > START_AT) bgMusic.currentTime = START_AT;
+    });
+    bgMusic.addEventListener('ended', ()=>{
+      bgMusic.currentTime = START_AT;
+      bgMusic.play();
+    });
 
     function showHint(){
       musicHint.classList.add('show');
